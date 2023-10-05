@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace CarPool.BL.Interfaces
 {
-    public interface IUserRepository : IRepository<User>
+    public interface IUserRepository : IRepository<ApplicationUser>
     {
-        Task<User?> GetUserByEmail(string email);
+        Task<ApplicationUser?> GetUserByEmail(string email);
 
     }
 }

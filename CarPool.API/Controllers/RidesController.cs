@@ -34,7 +34,7 @@ namespace CarPool.API.Controllers
         [HttpGet("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> GetById(Guid id)
         {
             var ride = await _rideService.GetById(id);
 
@@ -46,7 +46,7 @@ namespace CarPool.API.Controllers
         [HttpGet("driver/{driverId:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetRidesByDriver(int driverId)
+        public async Task<IActionResult> GetRidesByDriver(Guid driverId)
         {
             var user = await _userService.GetById(driverId);
             if (user == null) return NotFound();
@@ -59,7 +59,7 @@ namespace CarPool.API.Controllers
         [HttpGet("passenger/{passengerId:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetRidesByPassenger(int passengerId)
+        public async Task<IActionResult> GetRidesByPassenger(Guid passengerId)
         {
             var user = await _userService.GetById(passengerId);
             if (user == null) return NotFound();
@@ -105,7 +105,7 @@ namespace CarPool.API.Controllers
         [HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Remove(int id)
+        public async Task<IActionResult> Remove(Guid id)
         {
             var ride = await _rideService.GetById(id);
             if (ride == null) return NotFound();

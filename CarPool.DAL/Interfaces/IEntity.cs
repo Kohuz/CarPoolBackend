@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CarPool.DAL.Entities
+namespace CarPool.DAL.Interfaces
 {
-    public abstract class Entity
+    public interface IEntity
     {
-        public Guid Id { get; set; }
+        Guid Id { get; set; }
+
     }
 }

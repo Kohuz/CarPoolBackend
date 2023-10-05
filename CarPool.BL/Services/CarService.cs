@@ -22,7 +22,7 @@ namespace CarPool.BL.Services
             return await _carRepository.GetAll();
         }
 
-        public async Task<Car> GetById(int id)
+        public async Task<Car> GetById(Guid id)
         {
             return await _carRepository.GetById(id);
         }
@@ -63,7 +63,7 @@ namespace CarPool.BL.Services
             _carRepository?.Dispose();
         }
 
-        public async Task<IEnumerable<Car>> GetCarsByOwner(int ownerId)
+        public async Task<IEnumerable<Car>> GetCarsByOwner(Guid ownerId)
         {
             return await _carRepository.Search(c => c.OwnerId == ownerId);
         }

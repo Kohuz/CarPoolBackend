@@ -8,7 +8,7 @@ namespace CarPool.BL.Models
 {
     public class CarDetailModel
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string RegistrationNumber { get; set; }
         public string Manufacturer { get; set; }
         public string Type { get; set; }

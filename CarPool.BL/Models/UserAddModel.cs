@@ -12,6 +12,7 @@ namespace CarPool.BL.Models
     {
         [Required(ErrorMessage = "The field {0} is required")]
         public string Email {  get; set; }
+        public string Password { get; set; }
         public string Name { get; set; }
         public string Surname { get; set; }
     }

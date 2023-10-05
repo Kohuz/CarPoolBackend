@@ -14,7 +14,7 @@ namespace CarPool.DAL.Repositories
     {
         public RideRepository(CarPoolDbContext context) : base(context) { }
 
-        public async Task<IEnumerable<Ride>> GetRidesByPassenger(User passenger)
+        public async Task<IEnumerable<Ride>> GetRidesByPassenger(ApplicationUser passenger)
         {
             return await Db.Rides
                 .Include(r => r.Driver) 
@@ -22,7 +22,7 @@ namespace CarPool.DAL.Repositories
                 .Where(r => r.Passengers.Contains(passenger))
                 .ToListAsync();
         }
-        public async Task<IEnumerable<Ride>> GetRidesByDriver(int driverId)
+        public async Task<IEnumerable<Ride>> GetRidesByDriver(Guid driverId)
         {
             return await Db.Rides
                .Include(r => r.Driver) 

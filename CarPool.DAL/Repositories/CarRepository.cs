@@ -15,7 +15,7 @@ namespace CarPool.DAL.Repositories
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Car>> GetCarsByOwner(int ownerId)
+        public async Task<IEnumerable<Car>> GetCarsByOwner(Guid ownerId)
         {
             return await Search(b => b.OwnerId== ownerId);
         }

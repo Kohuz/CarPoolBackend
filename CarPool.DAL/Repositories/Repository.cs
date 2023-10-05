@@ -1,6 +1,7 @@
 ﻿using CarPool.BL.Interfaces;
 using CarPool.DAL.Context;
 using CarPool.DAL.Entities;
+using CarPool.DAL.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -8,7 +9,7 @@ using System.Linq.Expressions;
 namespace CarPool.DAL.Repositories
 {
 
-    public abstract class Repository<TEntity> : IRepository<TEntity> where TEntity : Entity
+    public abstract class Repository<TEntity> : IRepository<TEntity> where TEntity : class, IEntity
     {
         protected readonly CarPoolDbContext Db;
 
@@ -25,7 +26,7 @@ namespace CarPool.DAL.Repositories
             return await DbSet.AsNoTracking().Where(predicate).ToListAsync();
         }
 
-        public virtual async Task<TEntity> GetById(int id)
+        public virtual async Task<TEntity> GetById(Guid id)
         {
             return await DbSet.FindAsync(id);
         }

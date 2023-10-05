@@ -26,7 +26,7 @@ namespace CarPool.BL.Services
             return await _rideRepository.GetAll();
         }
 
-        public async Task<Ride> GetById(int id)
+        public async Task<Ride> GetById(Guid id)
         {
             return await _rideRepository.GetById(id);
         }
@@ -44,11 +44,11 @@ namespace CarPool.BL.Services
             await _rideRepository.Remove(ride);
             return true;
         }
-        public async Task<IEnumerable<Ride>> GetRidesByDriver(int driverId)
+        public async Task<IEnumerable<Ride>> GetRidesByDriver(Guid driverId)
         {
             return await _rideRepository.GetRidesByDriver(driverId);
         }
-        public async Task<IEnumerable<Ride>> GetRidesByPassenger(int passengerId)
+        public async Task<IEnumerable<Ride>> GetRidesByPassenger(Guid passengerId)
         {
             var passenger = await _userRepository.GetById(passengerId);
             var rides = await _rideRepository.GetRidesByPassenger(passenger);

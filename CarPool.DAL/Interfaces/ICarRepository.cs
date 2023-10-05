@@ -9,7 +9,7 @@ namespace CarPool.BL.Interfaces
 {
     public interface ICarRepository: IRepository<Car>
     {
-        Task<IEnumerable<Car>> GetCarsByOwner(int ownerId); 
+        Task<IEnumerable<Car>> GetCarsByOwner(Guid ownerId); 
         
     }
 }

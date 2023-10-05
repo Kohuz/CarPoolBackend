@@ -10,12 +10,12 @@ using System.Threading.Tasks;
 
 namespace CarPool.DAL.Repositories
 {
-    public class UserRepository : Repository<User>, IUserRepository
+    public class UserRepository : Repository<ApplicationUser>, IUserRepository
     {
         public UserRepository(CarPoolDbContext context) : base(context) {
             
         }
-        public async Task<User?> GetUserByEmail(string email)
+        public async Task<ApplicationUser?> GetUserByEmail(string email)
         {
             return await Db.Users.FirstOrDefaultAsync(user => user.Email == email);
 

@@ -3,6 +3,7 @@ using CarPool.BL.Interfaces;
 using CarPool.BL.Models;
 using CarPool.BL.Services;
 using CarPool.DAL.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,6 +25,7 @@ namespace CarPool.API.Controllers
             _userService = userService;
         }
 
+        [Authorize]
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll()
@@ -36,7 +38,7 @@ namespace CarPool.API.Controllers
         [HttpGet("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> GetById(Guid id)
         {
             var car = await _carService.GetById(id);
 
@@ -48,7 +50,7 @@ namespace CarPool.API.Controllers
         [HttpGet("owner/{ownerId:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetCarsByOwner(int ownerId)
+        public async Task<IActionResult> GetCarsByOwner(Guid ownerId)
         {
             var user = await _userService.GetById(ownerId);
             if (user == null) return NotFound();
@@ -77,7 +79,7 @@ namespace CarPool.API.Controllers
         [HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Remove(int id)
+        public async Task<IActionResult> Remove(Guid id)
         {
             var car = await _carService.GetById(id);
             if (car == null) return NotFound();

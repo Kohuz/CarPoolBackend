@@ -9,7 +9,7 @@ namespace CarPool.BL.Models
 {
     public class RideResultModel
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public DateTime StartTime { get; set; }
         public int DurationInMinute { get; set; }
         public String StartLocation { get; set; }

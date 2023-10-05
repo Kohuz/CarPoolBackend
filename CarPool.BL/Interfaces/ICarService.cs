@@ -10,12 +10,12 @@ namespace CarPool.BL.Interfaces
     public interface ICarService: IDisposable
     {
         Task<IEnumerable<Car>> GetAll();
-        Task<Car> GetById(int id);
+        Task<Car> GetById(Guid id);
         Task<Car> Add(Car car);
         Task<Car> Update(Car car);
         Task<bool> Remove(Car car);
 
-        Task<IEnumerable<Car>> GetCarsByOwner(int ownerId);
+        Task<IEnumerable<Car>> GetCarsByOwner(Guid ownerId);
 
         Task<IEnumerable<Car>> Search(string RegistrationNumber);
 

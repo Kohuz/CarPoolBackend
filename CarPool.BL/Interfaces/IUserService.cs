@@ -9,12 +9,12 @@ namespace CarPool.BL.Interfaces
 {
     public interface IUserService : IDisposable
     {
-        Task<IEnumerable<User>> GetAll();
-        Task<User> GetById(int id);
-        Task<User> Add(User user);
-        Task<User> Update(User user);
-        Task<bool> Remove(User user);
-        Task<User> Search(string email);
+        Task<IEnumerable<ApplicationUser>> GetAll();
+        Task<ApplicationUser> GetById(Guid id);
+        Task<ApplicationUser> Add(ApplicationUser user);
+        Task<ApplicationUser> Update(ApplicationUser user);
+        Task<bool> Remove(ApplicationUser user);
+        Task<ApplicationUser> Search(string email);
 
     }
 }

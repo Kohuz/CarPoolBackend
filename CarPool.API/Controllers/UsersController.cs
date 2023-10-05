@@ -3,7 +3,12 @@ using CarPool.BL.Interfaces;
 using CarPool.BL.Models;
 using CarPool.DAL.Entities;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace CarPool.API.Controllers
 {
@@ -14,12 +19,19 @@ namespace CarPool.API.Controllers
         
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IConfiguration _configuration;
+
 
         public UsersController(IMapper mapper,
-                                    IUserService userService)
+            IUserService userService,
+            UserManager<ApplicationUser> userManager,
+            IConfiguration configuration)
         {
             _mapper = mapper;
             _userService = userService;
+            _userManager = userManager;
+            _configuration = configuration;
         }
 
         [HttpGet]
@@ -34,7 +46,7 @@ namespace CarPool.API.Controllers
         [HttpGet("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> GetById(Guid id)
         {
             var user = await _userService.GetById(id);
 
@@ -57,16 +69,58 @@ namespace CarPool.API.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Add(UserAddModel userToAdd)
+        public async Task<ActionResult> Add(UserAddModel userToAdd)
         {
-            if (!ModelState.IsValid) return BadRequest();
+            var user = new ApplicationUser
+            {
+                Email = userToAdd.Email,
+                UserName = userToAdd.Email,
+                Name = userToAdd.Name,
+                Surname = userToAdd.Surname
+            };
 
-            var user = _mapper.Map<User>(userToAdd);
-            var userResult = await _userService.Add(user);
+            var result = await _userManager.CreateAsync(user, userToAdd.Password);
 
-            if (userResult == null) return BadRequest();
+            if (!result.Succeeded)
+            {
+                return BadRequest(result.Errors);
+            }
 
-            return Ok(_mapper.Map<UserDetailModel>(userResult));
+            user.PasswordHash = null;
+            return Created("", user);
+        }
+        [HttpPost]
+        [Route("login")]
+        public async Task<IActionResult> Login([FromBody] UserLoginModel model)
+        {
+            var user = await _userManager.FindByEmailAsync(model.Email);
+
+            if (user == null || !await _userManager.CheckPasswordAsync(user, model.Password))
+            {
+                return Unauthorized(); // Invalid credentials
+            }
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_configuration["Jwt:SecretKey"]);
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[]
+                {
+            new Claim(ClaimTypes.Name, user.Email),
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
+
+        }),
+                Expires = DateTime.UtcNow.AddHours(1),
+                Issuer = _configuration["Jwt:Issuer"], // Use Issuer from appsettings.json
+                Audience = _configuration["Jwt:Audience"],
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            var tokenString = tokenHandler.WriteToken(token);
+
+            return Ok(new { Token = tokenString });
         }
 
         //[HttpPut("{id:int}")]
@@ -86,7 +140,7 @@ namespace CarPool.API.Controllers
         [HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Remove(int id)
+        public async Task<IActionResult> Remove(Guid id)
         {
             var user = await _userService.GetById(id);
             if (user == null) return NotFound();

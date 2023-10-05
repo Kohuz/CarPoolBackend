@@ -15,17 +15,17 @@ namespace CarPool.BL.Services
             _userRepository = userRepository;
         }
 
-        public async Task<IEnumerable<User>> GetAll()
+        public async Task<IEnumerable<ApplicationUser>> GetAll()
         {
             return await _userRepository.GetAll();
         }
 
-        public async Task<User> GetById(int id)
+        public async Task<ApplicationUser> GetById(Guid id)
         {
             return await _userRepository.GetById(id);
         }
 
-        public async Task<User> Add(User user)
+        public async Task<ApplicationUser> Add(ApplicationUser user)
         {
             if (_userRepository.Search(u => u.Email == user.Email).Result.Any())
                 return null;
@@ -34,7 +34,7 @@ namespace CarPool.BL.Services
             return user;
         }
 
-        public async Task<User?> Update(User user)
+        public async Task<ApplicationUser?> Update(ApplicationUser user)
         {
             //TODO
             if (_userRepository.Search(u => u.Email == user.Email).Result.Any())
@@ -44,13 +44,13 @@ namespace CarPool.BL.Services
             return user;
         }
 
-        public async Task<bool> Remove(User user)
+        public async Task<bool> Remove(ApplicationUser user)
         {
             await _userRepository.Remove(user);
             return true;
         }
 
-        public async Task<User?> Search(string email)
+        public async Task<ApplicationUser?> Search(string email)
         {
             return await _userRepository.GetUserByEmail(email);
         }
