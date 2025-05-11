@@ -18,7 +18,8 @@ namespace CarPool.API.Controllers
         private readonly IMapper _mapper;
 
         public CarsController(IMapper mapper,
-                                    ICarService carService, IUserService userService)
+                            ICarService carService,
+                            IUserService userService)
         {
             _mapper = mapper;
             _carService = carService;
@@ -27,28 +28,25 @@ namespace CarPool.API.Controllers
 
         [Authorize]
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<CarDetailModel>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll()
         {
             var cars = await _carService.GetAll();
-
             return Ok(_mapper.Map<IEnumerable<CarDetailModel>>(cars));
         }
 
-        [HttpGet("{id:int}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [HttpGet("{id:guid}")]
+        [ProducesResponseType(typeof(CarDetailModel), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetById(Guid id)
         {
             var car = await _carService.GetById(id);
-
             if (car == null) return NotFound();
-
             return Ok(_mapper.Map<CarDetailModel>(car));
         }
 
-        [HttpGet("owner/{ownerId:int}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [HttpGet("owner/{ownerId:guid}")]
+        [ProducesResponseType(typeof(IEnumerable<CarDetailModel>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetCarsByOwner(Guid ownerId)
         {
@@ -56,15 +54,13 @@ namespace CarPool.API.Controllers
             if (user == null) return NotFound();
 
             var cars = await _carService.GetCarsByOwner(ownerId);
-
             return Ok(_mapper.Map<IEnumerable<CarDetailModel>>(cars));
         }
 
-
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CarDetailModel), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Add(CarAddModel carToAdd)
+        public async Task<IActionResult> Add([FromBody] CarAddModel carToAdd)
         {
             if (!ModelState.IsValid) return BadRequest();
 
@@ -72,24 +68,22 @@ namespace CarPool.API.Controllers
             var carResult = await _carService.Add(car);
 
             if (carResult == null) return BadRequest();
-
             return Ok(_mapper.Map<CarDetailModel>(carResult));
         }
 
-        [HttpDelete("{id:int}")]
+        [HttpDelete("{id:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Remove(Guid id)
         {
             var car = await _carService.GetById(id);
             if (car == null) return NotFound();
 
             var result = await _carService.Remove(car);
-
             if (!result) return BadRequest();
 
             return Ok();
         }
     }
 }
-
